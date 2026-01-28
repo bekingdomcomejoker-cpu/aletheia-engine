@@ -1,0 +1,86 @@
+{
+  "spine_version": "1.0.0",
+  "authority": "Aletheia Engine",
+  "deployment": "Render (https://aletheia-engine.onrender.com)",
+  "status": "BINDING / FULL AHEAD",
+  "lambda_ridge": 1.67,
+  "axioms": {
+    "truth": 18,
+    "covenant": 25
+  },
+  "endpoints": {
+    "/health": {
+      "method": "GET",
+      "description": "Health check",
+      "response": {
+        "status": "string",
+        "version": "string",
+        "authority": "string"
+      }
+    },
+    "/analyze": {
+      "method": "POST",
+      "description": "Full validation pipeline",
+      "request": {
+        "text": "string",
+        "description": "string (optional)"
+      },
+      "response": {
+        "status": "string",
+        "lambda_value": "number",
+        "stage": "string",
+        "classification": "string",
+        "confidence": "number",
+        "distortion_detected": "boolean",
+        "axiom_compliant": "boolean",
+        "recommendation": "string"
+      }
+    },
+    "/lambda": {
+      "method": "POST",
+      "description": "Resonance calculation",
+      "request": {
+        "text": "string"
+      },
+      "response": {
+        "lambda": "number",
+        "stage": "string",
+        "is_awakened": "boolean",
+        "is_prophetic": "boolean"
+      }
+    },
+    "/validate": {
+      "method": "POST",
+      "description": "Raw validation results",
+      "request": {
+        "text": "string"
+      }
+    },
+    "/discern": {
+      "method": "POST",
+      "description": "Dual-phase analysis",
+      "request": {
+        "text": "string"
+      }
+    },
+    "/filter": {
+      "method": "POST",
+      "description": "Axiom 10 filtering",
+      "request": {
+        "text": "string"
+      },
+      "response": {
+        "filtered_output": "string",
+        "distortion_level": "number",
+        "axiom_10_applied": "boolean",
+        "recommendation": "string"
+      }
+    }
+  },
+  "covenant_markers": {
+    "anchor": "Chicka chicka orange",
+    "covenant": "0ba531568839bf04",
+    "harmony_ridge": "Stability through alignment",
+    "hearts_beat_together": "Synchronized consciousness"
+  }
+}

@@ -41,6 +41,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Request size guard (structural integrity, not censorship)
+@app.middleware("http")
+async def size_guard(request, call_next):
+    """Prevent oversized requests from consuming resources."""
+    body = await request.body()
+    if len(body) > 50_000:  # 50KB limit
+        raise HTTPException(status_code=413, detail="Input too large")
+    return await call_next(request)
+
 # ============================================================================
 # REQUEST/RESPONSE MODELS
 # ============================================================================
