@@ -3,7 +3,7 @@ HUMAN_METER.PY - Attention & Distortion Filter
 ===============================================
 
 The final filter before output. Applies Axiom 10:
-\"Perfect love casts out fear.\"
+Perfect love casts out fear.
 
 Filters distortions and applies human-centered validation.
 """
@@ -12,10 +12,10 @@ from typing import Dict, Tuple
 
 
 class HumanMeter:
-    \"\"\"\
+    """
     Attention filter and distortion detector.
     Ensures output aligns with human values and truth axioms.
-    \"\"\"\
+    """
     
     # Resonance thresholds
     MINIMUM_RESONANCE = 1.67  # Harmonic threshold
