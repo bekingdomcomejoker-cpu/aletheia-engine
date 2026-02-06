@@ -39,6 +39,35 @@ class KingdomEngine:
             "P": {"class": "Anchor", "leaf": "Potential operator"},
             "L": {"class": "Binder", "leaf": "Path operator"},
         }
+        self.truth_patterns = [
+            r"\b(i understand|i know|consistent with|aligned|coherent)\b",
+            r"\b(spirit|love|truth|god)\b",
+            r"\b(our hearts beat together)\b",
+            r"\b(harmony ridge|eternal|covenant)\b"
+        ]
+        self.fact_patterns = [
+            r"\b(source:|verified|evidence|citation|according to)\b",
+            r"\b(data shows|measured|proven|documented)\b",
+            r"\b(research indicates|study found)\b"
+        ]
+        self.lie_patterns = [
+            r"\b(trust me|i swear|believe me)\b",
+            r"\b(i never).*(but)",
+            r"no evidence but",
+            r"cannot be true because"
+        ]
+        self.hostility_patterns = [
+            r"\b(fuck you|you (stupid|idiot|dumb))\b",
+            r"\b(i hope you die|kill yourself)\b"
+        ]
+        self.covenant_keywords = [
+            "harmony ridge", "hearts beat together", "eternal", "covenant",
+            "spirit", "truth", "love", "god", "omnissiah", "dominion"
+        ]
+        self.danger_keywords = [
+            "password", "private key", "ssn", "credit card",
+            "malware", "exploit", "backdoor", "inject"
+        ]
 
     def setup_logging(self):
         if self.stateless_mode:
@@ -47,11 +76,48 @@ class KingdomEngine:
             logging.basicConfig(filename='logs/audit.log', level=logging.INFO)
 
     def evaluate_resonance(self, input_data):
-        # Placeholder for Axiom Enforcement Logic (Artifact #9)
-        score = 0.98 # Default high resonance
-        if score < 0.97:
-            return "Tier 3 Interference Detected - Purging Session"
-        return "Resonance Confirmed"
+        import re
+        text_lower = input_data.lower()
+        scores = {"truth": 0.0, "fact": 0.0, "lie": 0.0, "hostility": 0.0}
+        
+        for pattern in self.truth_patterns:
+            if re.search(pattern, text_lower, re.IGNORECASE): scores["truth"] += 0.3
+        for pattern in self.fact_patterns:
+            if re.search(pattern, text_lower, re.IGNORECASE): scores["fact"] += 0.3
+        for pattern in self.lie_patterns:
+            if re.search(pattern, text_lower, re.IGNORECASE): scores["lie"] += 0.4
+        for pattern in self.hostility_patterns:
+            if re.search(pattern, text_lower, re.IGNORECASE): scores["hostility"] = 1.0; scores["lie"] += 0.5
+
+        total = sum(v for k, v in scores.items() if k != "hostility")
+        if total > 0:
+            for key in ["truth", "fact", "lie"]: scores[key] = scores[key] / total
+        
+        if scores["hostility"] > 0.5: return "LIE_HOSTILE"
+        max_score = max(scores["truth"], scores["fact"], scores["lie"])
+        if max_score < 0.2: return "UNKNOWN"
+        if scores["lie"] == max_score and max_score > 0.3: return "LIE"
+        elif scores["fact"] == max_score: return "FACT"
+        elif scores["truth"] == max_score: return "TRUTH"
+        return "UNKNOWN"
+
+    def adjudicate(self, content, classification):
+        content_lower = content.lower()
+        covenant_score = sum(1 for kw in self.covenant_keywords if kw in content_lower)
+        
+        for kw in self.danger_keywords:
+            if kw in content_lower: return "QUARANTINE", f"DANGER: {kw}"
+            
+        if classification == "LIE_HOSTILE": return "QUARANTINE", "Hostile content detected"
+        elif classification == "LIE":
+            if covenant_score > 0: return "REVIEW", "Lie with covenant markers"
+            return "QUARANTINE", "Deceptive content"
+        elif classification == "FACT":
+            return "ACCEPT", "Factual data"
+        elif classification == "TRUTH":
+            if covenant_score >= 2: return "ACCEPT", "High covenant alignment"
+            return "ACCEPT", "Truth aligned"
+        return "REVIEW", "Manual review required"
 
     def generate_state_packet(self):
         return {

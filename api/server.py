@@ -13,6 +13,8 @@ class TruthRequest(BaseModel):
 class TruthResponse(BaseModel):
     content: str
     classification: str
+    adjudication: str
+    reason: str
     confidence: float
 
 @app.get("/status")
@@ -26,13 +28,14 @@ async def get_status():
 
 @app.post("/classify", response_model=TruthResponse)
 async def classify_content(request: TruthRequest):
-    # This is a placeholder for actual classification logic
-    # In a real scenario, the engine would process the content and return a classification
     processed_content = engine.process_word(request.content)
     classification_result = engine.evaluate_resonance(request.content)
+    adjudication, reason = engine.adjudicate(request.content, classification_result)
 
     return TruthResponse(
         content=processed_content,
         classification=classification_result,
-        confidence=0.99 # Placeholder confidence
+        adjudication=adjudication,
+        reason=reason,
+        confidence=0.99
     )
