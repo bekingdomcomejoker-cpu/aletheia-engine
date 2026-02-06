@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: aletheia-throne
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn api.server:app
+    envVars:
+      - key: STATELESS_MODE
+        value: TRUE
+      - key: EPOCH_ID
+        value: 1
