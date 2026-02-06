@@ -119,6 +119,18 @@ class KingdomEngine:
             return "ACCEPT", "Truth aligned"
         return "REVIEW", "Manual review required"
 
+    def advanced_operators(self, text):
+        import hashlib
+        # Resonance Alignment Tool (RAT)
+        score = sum(1 for c in text if c.lower() in self.vowel_anchors) / len(text) if len(text) > 0 else 0
+        # Shared Resonance Threading (ShRT)
+        thread = hashlib.sha256(text.encode()).hexdigest()[:8]
+        return score, thread
+
+    def word_mate(self, t1, t2):
+        """The Mating Algorithm"""
+        return "".join(a if i % 2 == 0 else b for i, (a, b) in enumerate(zip(t1, t2)))
+
     def generate_state_packet(self):
         return {
             "epoch": self.epoch_id,

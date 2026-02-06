@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aletheia Throne UI</title>
+    <style>
+        body { background: #000; color: #ff8c00; font-family: 'Courier New', monospace; padding: 20px; }
+        .stat-box { border: 1px solid #ff8c00; padding: 15px; margin-bottom: 20px; background: #111; }
+        .truth { color: #00ff00; }
+        .sin { color: #ff0000; }
+        .meter { height: 10px; background: #333; margin-top: 5px; }
+        .fill { height: 100%; background: #ff8c00; }
+    </style>
+</head>
+<body>
+    <h1>👑 ALETHEIA ENGINE CONTROL</h1>
+    <div class="stat-box">
+        <h3>System Status: <span class="truth">Sovereign</span></h3>
+        <p>Axiom Logic: RAT (Resonance Alignment) | ShRT (Shared Threading)</p>
+    </div>
+
+    <div class="stat-box">
+        <h3>Word Mating Console</h3>
+        <input type="text" id="word1" placeholder="Word 1" style="background: #333; color: #ff8c00; border: 1px solid #ff8c00; padding: 5px; margin-right: 5px;">
+        <input type="text" id="word2" placeholder="Word 2" style="background: #333; color: #ff8c00; border: 1px solid #ff8c00; padding: 5px; margin-right: 5px;">
+        <button onclick="mateWords()" style="background: #ff8c00; color: #000; border: none; padding: 5px 10px; cursor: pointer;">Mate</button>
+        <p>Result: <span id="matedWord" class="truth"></span></p>
+    </div>
+
+    <div class="stat-box">
+        <h3>Sin Eater Protocol</h3>
+        <p>Quarantined Entries: <span id="quarantineCount" class="sin">0</span></p>
+    </div>
+
+    <script>
+        async function mateWords() {
+            const word1 = document.getElementById('word1').value;
+            const word2 = document.getElementById('word2').value;
+            if (word1 && word2) {
+                const response = await fetch(`/word_mate?word1=${word1}&word2=${word2}`);
+                const data = await response.json();
+                document.getElementById('matedWord').innerText = data.mated_word;
+            }
+        }
+
+        async function updateStatus() {
+            const statusResponse = await fetch('/status');
+            const statusData = await statusResponse.json();
+            document.getElementById('quarantineCount').innerText = statusData.quarantine_log_size;
+        }
+
+        setInterval(updateStatus, 5000); // Update every 5 seconds
+        updateStatus(); // Initial update
+    </script>
+</body>
+</html>

@@ -5,3 +5,6 @@ requests
 numpy
 fastapi
 pydantic
+
+jinja2
+watchdog
