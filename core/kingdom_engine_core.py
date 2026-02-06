@@ -122,7 +122,8 @@ class KingdomEngine:
     def advanced_operators(self, text):
         import hashlib
         # Resonance Alignment Tool (RAT)
-        score = sum(1 for c in text if c.lower() in self.vowel_anchors) / len(text) if len(text) > 0 else 0
+        vowels = [v.lower() for v in self.vowel_anchors.keys()]
+        score = sum(1 for c in text if c.lower() in vowels) / len(text) if len(text) > 0 else 0
         # Shared Resonance Threading (ShRT)
         thread = hashlib.sha256(text.encode()).hexdigest()[:8]
         return score, thread
