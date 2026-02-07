@@ -3,17 +3,14 @@ services:
     name: aletheia-throne
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: PYTHONPATH=. gunicorn api.server:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+    startCommand: PYTHONPATH=. gunicorn api.server:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --timeout 120
     envVars:
-      - key: STATELESS_MODE
+      - key: ALETHEIA_STATELESS_MODE
         value: TRUE
-      - key: EPOCH_ID
+      - key: ALETHEIA_EPOCH_ID
         value: 1
       - key: PYTHON_VERSION
         value: 3.11
-      - key: PORT
-        value: 8000
-    healthCheckPath: /health
+    healthCheckPath: /status
     healthCheckInterval: 30
     maxShutdownDelay: 30
-    preDeployCommand: python -m pytest tests/ || true

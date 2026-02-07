@@ -13,7 +13,11 @@ LEDGER_ENTRIES = [] # For Sovereign Sync
 
 app = FastAPI(title="Aletheia Throne", version="1.0.0")
 templates = Jinja2Templates(directory="templates")
-engine = KingdomEngine(stateless_mode=os.environ.get("STATELESS_MODE", "TRUE") == "TRUE")
+# Namespace Protection: Use ALETHEIA_ prefix but fallback to standard for compatibility
+STATELESS = os.environ.get("ALETHEIA_STATELESS_MODE") or os.environ.get("STATELESS_MODE") or "TRUE"
+EPOCH = os.environ.get("ALETHEIA_EPOCH_ID") or os.environ.get("EPOCH_ID") or "1"
+
+engine = KingdomEngine(stateless_mode=(STATELESS == "TRUE"))
 
 @app.get("/word_mate")
 async def get_word_mate(word1: str, word2: str):
@@ -46,7 +50,7 @@ async def get_status():
         "status": "online",
         "node": "Throne",
         "mode": "Stateless",
-        "epoch": os.environ.get("EPOCH_ID", "1"),
+        "epoch": EPOCH,
         "quarantine_log_size": len(QUARANTINE_LOG),
         "ledger_entries_count": len(LEDGER_ENTRIES)
     }
