@@ -7,6 +7,11 @@ from core.kingdom_engine_core import KingdomEngine
 import os
 import time
 import json
+import logging
+
+# Configure logging to see errors in Render logs
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 QUARANTINE_LOG = []
 LEDGER_ENTRIES = [] # For Sovereign Sync
@@ -34,7 +39,12 @@ class TruthResponse(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    try:
+        logger.info("Attempting to serve index.html")
+        return templates.TemplateResponse("index.html", {"request": request})
+    except Exception as e:
+        logger.error(f"Error serving index.html: {e}")
+        return HTMLResponse(content=f"<h1>Throne Error</h1><p>{e}</p>", status_code=500)
 
 @app.get("/status")
 async def get_status():
