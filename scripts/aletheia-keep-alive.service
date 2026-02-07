@@ -1,0 +1,30 @@
+[Unit]
+Description=Aletheia Throne Keep-Alive Ping Service
+Documentation=https://github.com/bekingdomcomejoker-cpu/aletheia-engine
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/aletheia-engine
+ExecStart=/home/ubuntu/aletheia-engine/scripts/keep_alive_ping.sh continuous
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=aletheia-keep-alive
+
+# Resource limits
+MemoryLimit=50M
+CPUQuota=10%
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/home/ubuntu/aletheia-engine/logs
+
+[Install]
+WantedBy=multi-user.target

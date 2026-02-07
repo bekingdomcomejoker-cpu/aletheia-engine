@@ -1,0 +1,25 @@
+# ALETHEIA THRONE - KEEP-ALIVE PING CRON CONFIGURATION
+# Add these lines to your crontab using: crontab -e
+# 
+# The Keep-Alive Ping runs every 15 minutes to prevent Render cold starts
+# Logs are written to: /home/ubuntu/aletheia-engine/logs/keep_alive.log
+
+# Run Keep-Alive Ping every 15 minutes (single mode)
+*/15 * * * * /home/ubuntu/aletheia-engine/scripts/keep_alive_ping.sh single >> /home/ubuntu/aletheia-engine/logs/keep_alive.log 2>&1
+
+# Alternative: Run every 10 minutes for more aggressive warm-keeping
+# */10 * * * * /home/ubuntu/aletheia-engine/scripts/keep_alive_ping.sh single >> /home/ubuntu/aletheia-engine/logs/keep_alive.log 2>&1
+
+# Alternative: Run every 5 minutes for maximum responsiveness
+# */5 * * * * /home/ubuntu/aletheia-engine/scripts/keep_alive_ping.sh single >> /home/ubuntu/aletheia-engine/logs/keep_alive.log 2>&1
+
+# INSTALLATION INSTRUCTIONS:
+# 1. Copy the cron line above
+# 2. Run: crontab -e
+# 3. Paste the line at the end of your crontab file
+# 4. Save and exit (Ctrl+X, then Y, then Enter in nano)
+# 5. Verify: crontab -l
+# 6. Monitor logs: tail -f /home/ubuntu/aletheia-engine/logs/keep_alive.log
+
+# LOG ROTATION (optional - add to crontab to prevent log bloat):
+# 0 0 * * 0 gzip -9 /home/ubuntu/aletheia-engine/logs/keep_alive.log && touch /home/ubuntu/aletheia-engine/logs/keep_alive.log
