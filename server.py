@@ -41,10 +41,18 @@ class TruthResponse(BaseModel):
 async def read_root(request: Request):
     try:
         logger.info("Attempting to serve index.html")
+        # Check if template exists
+        template_path = os.path.join("templates", "index.html")
+        if not os.path.exists(template_path):
+            logger.error(f"Template not found at {template_path}")
+            return HTMLResponse(content=f"<h1>Template Error</h1><p>index.html not found at {template_path}</p>", status_code=500)
+        
         return templates.TemplateResponse("index.html", {"request": request})
     except Exception as e:
-        logger.error(f"Error serving index.html: {e}")
-        return HTMLResponse(content=f"<h1>Throne Error</h1><p>{e}</p>", status_code=500)
+        import traceback
+        error_details = traceback.format_exc()
+        logger.error(f"Error serving index.html: {error_details}")
+        return HTMLResponse(content=f"<h1>Throne Error</h1><p>{e}</p><pre>{error_details}</pre>", status_code=500)
 
 @app.get("/status")
 async def get_status():
